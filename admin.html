@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Maktab Mouride Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-deep: #1a472a;
+            --green-mid: #2d5f3d;
+            --green-light: #4a8c5c;
+            --gold: #c9a84c;
+            --gold-light: #f0d080;
+            --cream: #f4e4c1;
+            --cream-light: #fdf6e9;
+            --white: #ffffff;
+            --text-dark: #1c1c1c;
+            --text-muted: #6b7280;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --shadow: 0 4px 24px rgba(26,71,42,0.12);
+            --border: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #f1f5f2;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--green-deep) 0%, #0d2b18 60%, #1a3a22 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        #loginScreen::before {
+            content: '☪';
+            position: absolute;
+            font-size: 28rem;
+            color: rgba(255,255,255,0.03);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+            animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo { text-align: center; margin-bottom: 2rem; }
+        .login-logo .circle {
+            width: 72px; height: 72px;
+            background: var(--gold); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; margin: 0 auto 1rem;
+            box-shadow: 0 8px 24px rgba(201,168,76,0.4);
+        }
+        .login-logo h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--cream); margin-bottom: 0.3rem; }
+        .login-logo p { color: var(--gold); font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        .login-group { margin-bottom: 1.3rem; }
+        .login-group label { display: block; font-size: 0.82rem; font-weight: 700; color: rgba(244,228,193,0.7); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .login-input-wrap { position: relative; }
+        .login-input-wrap .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.6; }
+        .login-group input {
+            width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
+            background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 12px; color: var(--cream); font-size: 1rem;
+            font-family: 'Nunito', sans-serif; transition: all 0.2s; outline: none;
+        }
+        .login-group input::placeholder { color: rgba(244,228,193,0.35); }
+        .login-group input:focus { border-color: var(--gold); background: rgba(255,255,255,0.12); box-shadow: 0 0 0 3px rgba(201,168,76,0.2); }
+        .show-pw-btn { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(244,228,193,0.5); cursor: pointer; font-size: 1rem; padding: 0; transition: color 0.2s; }
+        .show-pw-btn:hover { color: var(--gold); }
+        .login-error { background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.4); color: #fca5a5; border-radius: 10px; padding: 0.7rem 1rem; font-size: 0.88rem; font-weight: 600; margin-bottom: 1.2rem; display: none; align-items: center; gap: 0.5rem; }
+        .login-error.show { display: flex; }
+        .login-btn { width: 100%; padding: 1rem; background: var(--gold); color: var(--green-deep); border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.25s; letter-spacing: 0.5px; margin-top: 0.5rem; }
+        .login-btn:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+        .login-attempts { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(244,228,193,0.4); }
+        .login-shake { animation: shake 0.4s ease; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        .locked-msg { text-align: center; color: #fca5a5; font-size: 0.9rem; margin-top: 1rem; display: none; }
+
+        /* ─── ADMIN APP ─── */
+        #adminApp { display: none; }
+
+        /* ─── HEADER ─── */
+        header {
+            background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+            padding: 0 2rem; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .admin-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--cream); font-weight: 700; }
+        .admin-badge { background: var(--gold); color: var(--green-deep); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .header-right { display: flex; align-items: center; gap: 1rem; }
+        .visit-shop-btn { background: rgba(255,255,255,0.15); color: var(--cream); border: 2px solid rgba(255,255,255,0.3); padding: 0.4rem 1.2rem; border-radius: 25px; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+        .visit-shop-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* ─── STORAGE INFO BAR ─── */
+        .storage-bar {
+            background: linear-gradient(135deg, #1a472a, #2d5f3d);
+            padding: 0.6rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.82rem;
+            color: rgba(244,228,193,0.85);
+            font-weight: 600;
+        }
+        .storage-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .storage-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+        .storage-dot.warn { background: #facc15; }
+        .storage-dot.full { background: #f87171; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .storage-progress-wrap {
+            flex: 1;
+            max-width: 200px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+        }
+        .storage-progress-bar {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        /* ─── LAYOUT ─── */
+        .admin-layout {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* ─── STATS ─── */
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+        .stat-card { background: white; border-radius: 14px; padding: 1rem; text-align: center; box-shadow: var(--shadow); }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 0.2rem; }
+        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--green-deep); }
+        .stat-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+
+        /* ─── FORM CARD ─── */
+        .form-card { background: white; border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+        .form-card-header { background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); padding: 1.2rem 1.8rem; display: flex; align-items: center; gap: 0.8rem; }
+        .form-card-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--cream); }
+        .form-body { padding: 1.5rem; }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label { display: block; font-weight: 700; font-size: 0.82rem; color: var(--green-deep); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.65rem 0.9rem;
+            border: 2px solid var(--border); border-radius: 10px;
+            font-size: 0.92rem; font-family: 'Nunito', sans-serif;
+            transition: all 0.2s; background: #fafafa;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--green-deep); background: white;
+            box-shadow: 0 0 0 3px rgba(26,71,42,0.08);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .char-counter { font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 0.15rem; }
+
+        /* ─── UPLOAD ZONE ─── */
+        .img-upload-area {
+            width: 100%; min-height: 150px;
+            border: 2.5px dashed #c3d9ca; border-radius: 14px;
+            background: #f6fbf7; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; padding: 1.2rem;
+            text-align: center; position: relative;
+        }
+        .img-upload-area:hover { border-color: var(--green-mid); background: #edf7ef; }
+        .img-upload-area.drag-over { border-color: var(--gold); background: #fdfbf0; transform: scale(1.01); box-shadow: 0 0 0 4px rgba(201,168,76,0.15); }
+        .img-upload-area.has-image { border-style: solid; border-color: var(--green-light); background: white; padding: 0.6rem; }
+        .upload-icon-big { font-size: 2.5rem; margin-bottom: 0.3rem; }
+        .upload-main-text { font-weight: 700; color: var(--green-deep); font-size: 0.9rem; margin-bottom: 0.15rem; }
+        .upload-sub-text { color: var(--text-muted); font-size: 0.78rem; }
+        .upload-hint-text { color: #9ca3af; font-size: 0.72rem; margin-top: 0.2rem; }
+        .clear-photo-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(220,38,38,0.1); color: var(--danger); border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .clear-photo-btn:hover { background: var(--danger); color: white; }
+
+        /* ─── SUBMIT ─── */
+        .submit-btn { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); color: var(--cream); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-top: 0.5rem; }
+        .submit-btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,71,42,0.3); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* ─── PRODUCT LIST ─── */
+        .list-card { background: white; border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+        .list-header { background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); padding: 1.2rem 1.8rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+        .list-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--cream); }
+        .list-header-right { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; }
+        .search-mini { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem; font-family: 'Nunito', sans-serif; outline: none; min-width: 160px; }
+        .search-mini::placeholder { color: rgba(255,255,255,0.6); }
+
+        /* ─── FILTER TABS ─── */
+        .filter-bar { padding: 0.8rem 1.5rem; background: #f9fafb; border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .filter-tab { background: white; border: 1.5px solid var(--border); color: var(--text-muted); padding: 0.3rem 0.9rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+        .filter-tab:hover { border-color: var(--green-light); color: var(--green-deep); }
+        .filter-tab.active { background: var(--green-deep); color: var(--cream); border-color: var(--green-deep); }
+
+        /* ─── PAGINATION ─── */
+        .pagination-bar {
+            padding: 1rem 1.5rem;
+            background: #f9fafb;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+        .pagination-info { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; }
+        .pagination-btns { display: flex; gap: 0.4rem; align-items: center; }
+        .page-btn {
+            background: white; border: 1.5px solid var(--border);
+            color: var(--text-dark); padding: 0.3rem 0.75rem;
+            border-radius: 8px; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s;
+        }
+        .page-btn:hover { border-color: var(--green-deep); color: var(--green-deep); }
+        .page-btn.active { background: var(--green-deep); color: var(--cream); border-color: var(--green-deep); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-size-sel { border: 1.5px solid var(--border); border-radius: 8px; padding: 0.3rem 0.5rem; font-size: 0.82rem; font-family: 'Nunito', sans-serif; color: var(--text-dark); background: white; cursor: pointer; }
+
+        /* ─── PRODUCT GRID ─── */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1.2rem;
+            min-height: 200px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 14px;
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .product-card:hover { box-shadow: 0 8px 24px rgba(26,71,42,0.12); transform: translateY(-2px); border-color: var(--green-light); }
+        .product-card-img {
+            width: 100%; height: 140px;
+            background: linear-gradient(135deg, var(--green-deep), var(--green-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: var(--cream);
+            overflow: hidden; position: relative;
+        }
+        .product-card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card-body { padding: 0.8rem; }
+        .product-card-name { font-weight: 700; color: var(--green-deep); font-size: 0.88rem; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-card-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .product-card-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--green-deep); }
+        .product-card-actions { display: flex; gap: 0.4rem; }
+        .product-badge-tag { position: absolute; top: 0.5rem; left: 0.5rem; background: var(--gold); color: var(--green-deep); font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 8px; }
+
+        /* ─── VIEW TOGGLE ─── */
+        .view-toggle { display: flex; gap: 0.3rem; }
+        .view-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.35rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+        .view-btn.active { background: var(--gold); color: var(--green-deep); border-color: var(--gold); }
+
+        /* ─── LIST VIEW ─── */
+        .products-list-view {}
+        .product-row { display: grid; grid-template-columns: 60px 1fr auto; gap: 0.8rem; padding: 0.8rem 1.2rem; border-bottom: 1px solid #f3f4f6; align-items: center; transition: background 0.15s; }
+        .product-row:hover { background: #f9fafb; }
+        .product-row:last-child { border-bottom: none; }
+        .product-row-thumb { width: 60px; height: 60px; border-radius: 10px; background: linear-gradient(135deg, var(--green-deep), var(--green-light)); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--cream); overflow: hidden; flex-shrink: 0; }
+        .product-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .product-row-info .name { font-weight: 700; color: var(--green-deep); margin-bottom: 0.2rem; font-size: 0.9rem; }
+        .product-row-info .meta { font-size: 0.78rem; color: var(--text-muted); display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .meta-tag { background: #f0fdf4; color: var(--green-deep); padding: 0.12rem 0.5rem; border-radius: 8px; font-weight: 600; }
+        .meta-price { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 700; color: var(--green-deep); }
+        .row-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        /* ─── BUTTONS ─── */
+        .edit-btn { background: var(--gold); color: var(--green-deep); border: none; padding: 0.3rem 0.8rem; border-radius: 7px; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+        .edit-btn:hover { background: var(--gold-light); }
+        .del-btn { background: var(--danger-light); color: var(--danger); border: 1px solid #fca5a5; padding: 0.3rem 0.8rem; border-radius: 7px; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+        .del-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        .danger-btn { background: var(--danger); color: white; border: none; padding: 0.35rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+        .danger-btn:hover { background: #b91c1c; }
+
+        /* ─── EMPTY ─── */
+        .empty-list { padding: 3rem 2rem; text-align: center; color: var(--text-muted); }
+        .empty-list .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .empty-list h3 { font-family: 'Cormorant Garamond', serif; color: var(--green-deep); font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+        /* ─── TOAST ─── */
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 700; z-index: 9999; transform: translateY(100px); opacity: 0; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 8px 24px rgba(0,0,0,0.25); max-width: 320px; }
+        .toast.success { background: var(--green-deep); color: var(--cream); }
+        .toast.error { background: var(--danger); color: white; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* ─── LOADING OVERLAY ─── */
+        .loading-overlay {
+            position: fixed; inset: 0;
+            background: rgba(26,71,42,0.85);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 10000; color: var(--cream);
+        }
+        .loading-spinner {
+            width: 48px; height: 48px;
+            border: 4px solid rgba(244,228,193,0.3);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1100px) { .admin-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+
+        /* ─── EXPORT/IMPORT ─── */
+        .io-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+        .io-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: rgba(244,228,193,0.85); padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+        .io-btn:hover { background: rgba(255,255,255,0.2); color: var(--gold); }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- ══════ LOADING ══════ -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p style="font-weight:700;font-size:1rem;">Initialisation de la base de données...</p>
+    <p style="font-size:0.8rem;opacity:0.7;margin-top:0.5rem;">Stockage étendu (IndexedDB)</p>
+</div>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="loginScreen" style="display:none;">
+    <div class="login-card" id="loginCard">
+        <div class="login-logo">
+            <div class="circle">☪</div>
+            <h1>Maktab Mouride Style</h1>
+            <p>Espace Administrateur</p>
+        </div>
+        <div class="login-error" id="loginError">
+            <span>⚠️</span> <span id="loginErrorMsg">Identifiant ou mot de passe incorrect.</span>
+        </div>
+        <div class="login-group">
+            <label>Identifiant Admin</label>
+            <div class="login-input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="loginUser" placeholder="Entrez votre identifiant" autocomplete="username" onkeydown="if(event.key==='Enter')tryLogin()">
+            </div>
+        </div>
+        <div class="login-group">
+            <label>Mot de Passe</label>
+            <div class="login-input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="loginPass" placeholder="Entrez votre mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
+                <button class="show-pw-btn" onclick="togglePassword()" id="eyeBtn">👁</button>
+            </div>
+        </div>
+        <div id="lockedMsg" class="locked-msg">🔐 Trop de tentatives. Attendez <span id="lockTimer">30</span>s.</div>
+        <button class="login-btn" id="loginBtn" onclick="tryLogin()">🔑 Se Connecter</button>
+        <div class="login-attempts" id="attemptsInfo"></div>
+    </div>
+</div>
+
+<!-- ══════ ADMIN APP ══════ -->
+<div id="adminApp">
+
+<header>
+    <div class="header-left">
+        <div class="admin-logo">☪ Maktab Mouride Style</div>
+        <span class="admin-badge">Admin</span>
+    </div>
+    <div class="header-right">
+        <a href="index.html" target="_blank" class="visit-shop-btn">🏪 Voir la Boutique</a>
+        <button onclick="logout()" style="background:rgba(220,38,38,0.2);color:#fca5a5;border:1px solid rgba(220,38,38,0.4);padding:.4rem 1rem;border-radius:20px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Nunito',sans-serif;">🚪 Déconnexion</button>
+    </div>
+</header>
+
+<!-- Storage bar -->
+<div class="storage-bar">
+    <div class="storage-indicator">
+        <div class="storage-dot" id="storageDot"></div>
+        <span id="storageText">Stockage IndexedDB — capacité illimitée</span>
+    </div>
+    <div class="storage-progress-wrap" id="storageProgressWrap" style="display:none;">
+        <div class="storage-progress-bar" id="storageProgressBar" style="width:0%"></div>
+    </div>
+    <div class="io-btns">
+        <button class="io-btn" onclick="exportData()">📤 Exporter JSON</button>
+        <button class="io-btn" onclick="document.getElementById('importFile').click()">📥 Importer JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+</div>
+
+<div class="admin-layout">
+    <!-- ══════ SIDEBAR ══════ -->
+    <div>
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Produits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <div class="stat-value" id="statCats">0</div>
+                <div class="stat-label">Catégories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📸</div>
+                <div class="stat-value" id="statPhotos">0</div>
+                <div class="stat-label">Avec photo</div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card" id="formCard">
+            <div class="form-card-header">
+                <span style="font-size:1.3rem">➕</span>
+                <h2 id="formTitle">Ajouter un Produit</h2>
+            </div>
+            <div class="form-body">
+                <input type="hidden" id="editId">
+
+                <div class="form-group">
+                    <label>Nom du Produit *</label>
+                    <input type="text" id="pName" placeholder="Ex: Boubou Grand Boubou Premium" maxlength="80" oninput="updateCounter('pName','nameCounter',80)">
+                    <div class="char-counter"><span id="nameCounter">0</span>/80</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom Arabe</label>
+                    <input type="text" id="pArabic" placeholder="الاسم بالعربية">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Catégorie *</label>
+                        <select id="pCategory">
+                            <option value="">-- Choisir --</option>
+                            <option value="boubou">Boubous</option>
+                            <option value="jalabei">Jalabei</option>
+                            <option value="khassida">Khassidas</option>
+                            <option value="parfum">Parfums</option>
+                            <option value="accessoires">Accessoires</option>
+                            <option value="decoration">Décoration</option>
+                            <option value="livres">Livres</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie personnalisée</label>
+                        <input type="text" id="pCatCustom" placeholder="Ou tapez une catégorie">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prix (FCFA)</label>
+                        <input type="number" id="pPrice" placeholder="25000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="pStock" placeholder="Quantité" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Badge (optionnel)</label>
+                    <input type="text" id="pBadge" placeholder="Ex: Nouveau, Promo, Exclusif...">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="pDesc" rows="3" placeholder="Décrivez le produit..." maxlength="400" oninput="updateCounter('pDesc','descCounter',400)"></textarea>
+                    <div class="char-counter"><span id="descCounter">0</span>/400</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Photo du Produit</label>
+                    <div class="img-upload-area" id="imgUploadArea"
+                         onclick="document.getElementById('photoInput').click()"
+                         ondragover="event.preventDefault();this.classList.add('drag-over')"
+                         ondragleave="this.classList.remove('drag-over')"
+                         ondrop="handleDrop(event)">
+                        <div id="uploadPlaceholder">
+                            <div class="upload-icon-big">📸</div>
+                            <p class="upload-main-text">Cliquez pour choisir une photo</p>
+                            <p class="upload-sub-text">ou glissez-déposez ici</p>
+                            <p class="upload-hint-text">JPG, PNG, WEBP — taille illimitée</p>
+                        </div>
+                        <img id="uploadedPreview" style="display:none;max-width:100%;max-height:180px;border-radius:8px;object-fit:contain;">
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+                    <div style="margin-top:0.6rem;display:flex;align-items:center;gap:0.5rem;">
+                        <div style="flex:1;height:1px;background:#e5e7eb;"></div>
+                        <span style="font-size:0.75rem;color:#9ca3af;font-weight:600;">OU URL</span>
+                        <div style="flex:1;height:1px;background:#e5e7eb;"></div>
+                    </div>
+                    <input type="text" id="pImage" placeholder="Coller une URL d'image ou un emoji (ex: 👔)" oninput="previewFromUrl()" style="margin-top:0.6rem;">
+                    <input type="hidden" id="pImageData">
+                </div>
+
+                <div style="display:flex;gap:0.8rem;">
+                    <button class="submit-btn" id="submitBtn" onclick="submitProduct()">
+                        <span id="submitIcon">➕</span> <span id="submitLabel">Ajouter le Produit</span>
+                    </button>
+                    <button id="cancelBtn" onclick="cancelEdit()" style="display:none;background:var(--border);color:var(--text-dark);border:none;padding:.8rem 1rem;border-radius:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.9rem;white-space:nowrap;">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ MAIN LIST ══════ -->
+    <div>
+        <div class="list-card">
+            <div class="list-header">
+                <h2>📋 Produits publiés</h2>
+                <div class="list-header-right">
+                    <input class="search-mini" type="text" id="adminSearch" placeholder="🔍 Rechercher..." oninput="searchProducts()">
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Vue grille">⊞</button>
+                        <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="Vue liste">☰</button>
+                    </div>
+                    <button class="danger-btn" onclick="clearAll()">🗑 Tout vider</button>
+                </div>
+            </div>
+            <!-- Filter tabs -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-tab active" data-cat="all" onclick="setFilter('all')">Tout</button>
+            </div>
+            <!-- Product display area -->
+            <div id="productsContainer" class="products-grid"></div>
+            <!-- Pagination -->
+            <div class="pagination-bar" id="paginationBar" style="display:none;">
+                <div style="display:flex;align-items:center;gap:0.8rem;">
+                    <span class="pagination-info" id="paginationInfo"></span>
+                    <select class="page-size-sel" id="pageSizeSel" onchange="changePageSize()">
+                        <option value="20">20 / page</option>
+                        <option value="50">50 / page</option>
+                        <option value="100">100 / page</option>
+                    </select>
+                </div>
+                <div class="pagination-btns" id="paginationBtns"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div><!-- end adminApp -->
+
+<script>
+    // ════════════════════════════════════════════════════════════════
+//  PATCH MAKTAB — Collez ce code dans votre <script> de la boutique
+//  Mettez-le au tout début du script, avant toute autre fonction
+// ════════════════════════════════════════════════════════════════
+
+(function patchMaktabBoutique() {
+
+    const STORAGE_KEY = 'maktab_products';
+    const DB_NAME     = 'maktab_mouride_db';
+    const DB_VERSION  = 2;
+    const STORE       = 'products';
+
+    function openIDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = e => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE))
+                    db.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true });
+                if (!db.objectStoreNames.contains('meta'))
+                    db.createObjectStore('meta', { keyPath: 'key' });
+            };
+            req.onsuccess = e => resolve(e.target.result);
+            req.onerror   = e => reject(e.target.error);
+        });
+    }
+
+    function idbGetAll(db) {
+        return new Promise((resolve, reject) => {
+            const tx  = db.transaction(STORE, 'readonly');
+            const req = tx.objectStore(STORE).getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror   = () => reject(req.error);
+        });
+    }
+
+    function restoreImages(products) {
+        return products.map(p => {
+            if (p.image && p.image.startsWith('__img_')) {
+                const data = localStorage.getItem('maktab_img_' + p.id);
+                if (data) return { ...p, image: data };
+            }
+            return p;
+        });
+    }
+
+    async function loadProducts() {
+        let products = [];
+        try {
+            const db = await openIDB();
+            products = await idbGetAll(db);
+        } catch(e) {}
+
+        if (!products.length) {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) products = JSON.parse(raw);
+            } catch(e) {}
+        }
+
+        return restoreImages(products);
+    }
+
+    let _cachedProducts = null;
+
+    loadProducts().then(products => {
+        _cachedProducts = products;
+
+        // Remplace getProducts() si elle existe dans votre boutique
+        if (typeof window.getProducts === 'function') {
+            window.getProducts = function() { return _cachedProducts; };
+        }
+
+        // Re-render automatique
+        const fns = ['renderProducts', 'renderList', 'render', 'displayProducts', 'loadProducts', 'init'];
+        for (const fn of fns) {
+            if (typeof window[fn] === 'function') {
+                try { window[fn](); } catch(e) {}
+                break;
+            }
+        }
+    });
+
+    // Intercepte localStorage.getItem pour retourner les vraies images
+    const _orig = localStorage.getItem.bind(localStorage);
+    localStorage.getItem = function(key) {
+        if (key === STORAGE_KEY && _cachedProducts && _cachedProducts.length > 0) {
+            return JSON.stringify(_cachedProducts);
+        }
+        return _orig(key);
+    };
+
+    // Mise à jour en temps réel si l'admin est ouvert dans un autre onglet
+    try {
+        new BroadcastChannel('maktab_sync').onmessage = async () => {
+            _cachedProducts = await loadProducts();
+            if (typeof window.getProducts === 'function')
+                window.getProducts = function() { return _cachedProducts; };
+            const fns = ['renderProducts', 'renderList', 'render', 'displayProducts'];
+            for (const fn of fns) {
+                if (typeof window[fn] === 'function') { try { window[fn](); } catch(e) {} break; }
+            }
+        };
+    } catch(e) {}
+
+})();
+
+// ════════════════════════════════════════════════════════════════
+//  FIN DU PATCH — votre code boutique continue normalement après
+// ════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// ██████ INDEXEDDB DATABASE ████████████████████████
+// ═══════════════════════════════════════════════════
+const DB_NAME = 'maktab_mouride_db';
+const DB_VERSION = 2;
+const STORE_PRODUCTS = 'products';
+const STORE_META = 'meta';
+let db = null;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = e => {
+            const database = e.target.result;
+            if (!database.objectStoreNames.contains(STORE_PRODUCTS)) {
+                const store = database.createObjectStore(STORE_PRODUCTS, { keyPath: 'id', autoIncrement: true });
+                store.createIndex('category', 'category', { unique: false });
+                store.createIndex('name', 'name', { unique: false });
+            }
+            if (!database.objectStoreNames.contains(STORE_META)) {
+                database.createObjectStore(STORE_META, { keyPath: 'key' });
+            }
+        };
+        req.onsuccess = e => { db = e.target.result; resolve(db); };
+        req.onerror = e => reject(e.target.error);
+    });
+}
+
+function dbGetAll() {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PRODUCTS, 'readonly');
+        const req = tx.objectStore(STORE_PRODUCTS).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function dbGet(id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PRODUCTS, 'readonly');
+        const req = tx.objectStore(STORE_PRODUCTS).get(id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function dbPut(product) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PRODUCTS, 'readwrite');
+        const req = tx.objectStore(STORE_PRODUCTS).put(product);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function dbDelete(id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PRODUCTS, 'readwrite');
+        const req = tx.objectStore(STORE_PRODUCTS).delete(id);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function dbClear() {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PRODUCTS, 'readwrite');
+        const req = tx.objectStore(STORE_PRODUCTS).clear();
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+// Also keep a sync copy in localStorage for boutique compatibility
+function syncToLocalStorage(products) {
+    try {
+        // Store minimal data (no images) for boutique listing
+        const minimal = products.map(p => ({
+            id: p.id, name: p.name, arabic: p.arabic,
+            category: p.category, price: p.price, stock: p.stock,
+            badge: p.badge, description: p.description,
+            image: p.image ? (p.image.startsWith('data:') ? '📸' : p.image) : ''
+        }));
+        localStorage.setItem('maktab_products', JSON.stringify(minimal));
+        // Also try full sync
+        localStorage.setItem('maktab_products_full', JSON.stringify(products));
+    } catch(e) {
+        // localStorage full — boutique will use IndexedDB directly
+    }
+}
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let allProducts = [];
+let filteredProducts = [];
+let currentPage = 1;
+let pageSize = 20;
+let currentFilter = 'all';
+let currentView = 'grid';
+let searchQuery = '';
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+async function initApp() {
+    try {
+        await openDB();
+        // Migrate from old localStorage if needed
+        await migrateFromLocalStorage();
+        allProducts = await dbGetAll();
+        document.getElementById('loadingOverlay').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
+        checkSession();
+        renderAll();
+    } catch(err) {
+        console.error('DB error:', err);
+        document.getElementById('loadingOverlay').innerHTML = '<p style="color:#fca5a5;font-size:1rem;text-align:center;padding:2rem;">⚠️ Erreur de base de données.<br><small>' + err + '</small></p>';
+    }
+}
+
+async function migrateFromLocalStorage() {
+    try {
+        const old = localStorage.getItem('maktab_products');
+        if (!old) return;
+        const products = JSON.parse(old);
+        if (!products.length) return;
+        // Check if already migrated
+        const existing = await dbGetAll();
+        if (existing.length > 0) return;
+        // Migrate
+        for (const p of products) {
+            await dbPut(p);
+        }
+        showToast('✅ Anciennes données migrées vers IndexedDB !', 'success');
+    } catch(e) { /* silent */ }
+}
+
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+const ADMIN_CREDENTIALS = [
+    { user: 'mouride_style', pass: 'maktab2000!' },
+];
+const SESSION_KEY = 'maktab_admin_session';
+const MAX_ATTEMPTS = 5;
+const LOCK_SECONDS = 30;
+let failedAttempts = 0;
+let lockUntil = 0;
+let lockInterval = null;
+
+function checkSession() {
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+    }
+}
+
+function tryLogin() {
+    if (Date.now() < lockUntil) return;
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const valid = ADMIN_CREDENTIALS.some(c => c.user === user && c.pass === pass);
+    if (valid) {
+        failedAttempts = 0;
+        sessionStorage.setItem(SESSION_KEY, '1');
+        const ls = document.getElementById('loginScreen');
+        ls.style.transition = 'opacity 0.5s';
+        ls.style.opacity = '0';
+        setTimeout(() => {
+            ls.style.display = 'none';
+            document.getElementById('adminApp').style.display = 'block';
+            renderAll();
+        }, 500);
+        hideError();
+    } else {
+        failedAttempts++;
+        shakeCard();
+        if (failedAttempts >= MAX_ATTEMPTS) {
+            lockAccount();
+        } else {
+            const rem = MAX_ATTEMPTS - failedAttempts;
+            showError('Identifiant ou mot de passe incorrect. ' + rem + ' tentative(s) restante(s).');
+            document.getElementById('attemptsInfo').textContent = 'Tentative ' + failedAttempts + '/' + MAX_ATTEMPTS;
+        }
+    }
+}
+
+function lockAccount() {
+    lockUntil = Date.now() + LOCK_SECONDS * 1000;
+    document.getElementById('loginBtn').disabled = true;
+    document.getElementById('loginUser').disabled = true;
+    document.getElementById('loginPass').disabled = true;
+    document.getElementById('lockedMsg').style.display = 'block';
+    document.getElementById('loginError').classList.remove('show');
+    let remaining = LOCK_SECONDS;
+    document.getElementById('lockTimer').textContent = remaining;
+    lockInterval = setInterval(() => {
+        remaining--;
+        document.getElementById('lockTimer').textContent = remaining;
+        if (remaining <= 0) {
+            clearInterval(lockInterval);
+            failedAttempts = 0; lockUntil = 0;
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginUser').disabled = false;
+            document.getElementById('loginPass').disabled = false;
+            document.getElementById('lockedMsg').style.display = 'none';
+            document.getElementById('attemptsInfo').textContent = 'Vous pouvez réessayer.';
+        }
+    }, 1000);
+}
+
+function showError(msg) { document.getElementById('loginErrorMsg').textContent = msg; document.getElementById('loginError').classList.add('show'); }
+function hideError() { document.getElementById('loginError').classList.remove('show'); document.getElementById('attemptsInfo').textContent = ''; }
+function shakeCard() { const c = document.getElementById('loginCard'); c.classList.remove('login-shake'); void c.offsetWidth; c.classList.add('login-shake'); }
+function togglePassword() { const i = document.getElementById('loginPass'); const b = document.getElementById('eyeBtn'); i.type = i.type === 'password' ? 'text' : 'password'; b.textContent = i.type === 'password' ? '👁' : '🙈'; }
+
+function logout() {
+    if (!confirm('Voulez-vous vous déconnecter ?')) return;
+    sessionStorage.removeItem(SESSION_KEY);
+    document.getElementById('adminApp').style.display = 'none';
+    const ls = document.getElementById('loginScreen');
+    ls.style.display = 'flex'; ls.style.opacity = '1';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').type = 'password';
+    document.getElementById('eyeBtn').textContent = '👁';
+    hideError();
+}
+
+// ═══════════════════════════════════════
+// PHOTO UPLOAD
+// ═══════════════════════════════════════
+let currentImageData = null;
+
+function handleFileSelect(e) { const f = e.target.files[0]; if (f) loadImageFile(f); }
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('imgUploadArea').classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadImageFile(f);
+}
+
+function loadImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            try {
+                const MAX = 1200;
+                let w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                currentImageData = canvas.toDataURL('image/jpeg', 0.85);
+            } catch(err) {
+                currentImageData = e.target.result;
+            }
+            document.getElementById('pImageData').value = currentImageData;
+            document.getElementById('pImage').value = '';
+            showUploadedPreview(currentImageData);
+            showToast('✅ Photo chargée avec succès !', 'success');
+        };
+        img.onerror = function() {
+            currentImageData = e.target.result;
+            document.getElementById('pImageData').value = currentImageData;
+            showUploadedPreview(currentImageData);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function showUploadedPreview(src) {
+    const area = document.getElementById('imgUploadArea');
+    document.getElementById('uploadPlaceholder').style.display = 'none';
+    const preview = document.getElementById('uploadedPreview');
+    preview.src = src; preview.style.display = 'block';
+    area.classList.add('has-image');
+    if (!area.querySelector('.clear-photo-btn')) {
+        const btn = document.createElement('button');
+        btn.className = 'clear-photo-btn'; btn.type = 'button'; btn.innerHTML = '✕';
+        btn.title = 'Supprimer la photo';
+        btn.onclick = e => { e.stopPropagation(); clearPhoto(); };
+        area.appendChild(btn);
+    }
+}
+
+function clearPhoto() {
+    currentImageData = null;
+    document.getElementById('pImageData').value = '';
+    document.getElementById('photoInput').value = '';
+    const area = document.getElementById('imgUploadArea');
+    document.getElementById('uploadedPreview').style.display = 'none';
+    document.getElementById('uploadedPreview').src = '';
+    document.getElementById('uploadPlaceholder').style.display = 'block';
+    area.classList.remove('has-image');
+    const btn = area.querySelector('.clear-photo-btn');
+    if (btn) btn.remove();
+}
+
+function previewFromUrl() {
+    const val = document.getElementById('pImage').value.trim();
+    if (val) clearPhoto();
+}
+
+// ═══════════════════════════════════════
+// FORM HELPERS
+// ═══════════════════════════════════════
+function updateCounter(inputId, counterId, max) {
+    document.getElementById(counterId).textContent = document.getElementById(inputId).value.length;
+}
+
+function getCategory() {
+    const sel = document.getElementById('pCategory').value;
+    const custom = document.getElementById('pCatCustom').value.trim();
+    return custom || sel;
+}
+
+// ═══════════════════════════════════════
+// SUBMIT PRODUCT
+// ═══════════════════════════════════════
+async function submitProduct() {
+    const name = document.getElementById('pName').value.trim();
+    const category = getCategory();
+    if (!name) { showToast('❌ Le nom est obligatoire.', 'error'); return; }
+    if (!category) { showToast('❌ La catégorie est obligatoire.', 'error'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> <span>Enregistrement...</span>';
+
+    const editId = document.getElementById('editId').value;
+    const imageVal = document.getElementById('pImageData').value || document.getElementById('pImage').value.trim();
+
+    const productData = {
+        name, arabic: document.getElementById('pArabic').value.trim(),
+        category, price: parseInt(document.getElementById('pPrice').value) || 0,
+        stock: parseInt(document.getElementById('pStock').value) || 0,
+        badge: document.getElementById('pBadge').value.trim(),
+        description: document.getElementById('pDesc').value.trim(),
+        image: imageVal,
+        updatedAt: Date.now()
+    };
+
+    try {
+        if (editId) {
+            const existing = await dbGet(parseInt(editId));
+            if (existing) {
+                await dbPut({ ...existing, ...productData });
+                showToast('✅ Produit modifié avec succès !', 'success');
+            }
+            cancelEdit();
+        } else {
+            productData.createdAt = Date.now();
+            await dbPut(productData);
+            showToast('🎉 Produit ajouté à la boutique !', 'success');
+            resetForm();
+        }
+        allProducts = await dbGetAll();
+        syncToLocalStorage(allProducts);
+        renderAll();
+    } catch(err) {
+        showToast('❌ Erreur: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        document.getElementById('submitIcon').textContent = editId ? '💾' : '➕';
+        document.getElementById('submitLabel').textContent = editId ? 'Sauvegarder' : 'Ajouter le Produit';
+    }
+}
+
+function resetForm() {
+    ['pName','pArabic','pCatCustom','pPrice','pStock','pBadge','pDesc','pImage'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    document.getElementById('pCategory').value = '';
+    document.getElementById('editId').value = '';
+    document.getElementById('nameCounter').textContent = '0';
+    document.getElementById('descCounter').textContent = '0';
+    clearPhoto();
+}
+
+async function editProduct(id) {
+    const p = await dbGet(id);
+    if (!p) return;
+
+    document.getElementById('editId').value = p.id;
+    document.getElementById('pName').value = p.name || '';
+    document.getElementById('pArabic').value = p.arabic || '';
+    document.getElementById('pPrice').value = p.price || '';
+    document.getElementById('pStock').value = p.stock || '';
+    document.getElementById('pBadge').value = p.badge || '';
+    document.getElementById('pDesc').value = p.description || '';
+
+    currentImageData = null;
+    if (p.image && p.image.startsWith('data:')) {
+        document.getElementById('pImage').value = '';
+        showUploadedPreview(p.image);
+        currentImageData = p.image;
+        document.getElementById('pImageData').value = p.image;
+    } else {
+        document.getElementById('pImage').value = p.image || '';
+        clearPhoto();
+    }
+
+    const catSel = document.getElementById('pCategory');
+    const options = Array.from(catSel.options).map(o => o.value);
+    if (options.includes(p.category)) {
+        catSel.value = p.category;
+        document.getElementById('pCatCustom').value = '';
+    } else {
+        catSel.value = '';
+        document.getElementById('pCatCustom').value = p.category;
+    }
+
+    document.getElementById('formTitle').textContent = 'Modifier le Produit';
+    document.getElementById('submitLabel').textContent = 'Sauvegarder';
+    document.getElementById('submitIcon').textContent = '💾';
+    document.getElementById('cancelBtn').style.display = 'block';
+    updateCounter('pName','nameCounter',80);
+    updateCounter('pDesc','descCounter',400);
+    document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEdit() {
+    document.getElementById('editId').value = '';
+    document.getElementById('formTitle').textContent = 'Ajouter un Produit';
+    document.getElementById('submitLabel').textContent = 'Ajouter le Produit';
+    document.getElementById('submitIcon').textContent = '➕';
+    document.getElementById('cancelBtn').style.display = 'none';
+    resetForm();
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Supprimer ce produit de la boutique ?')) return;
+    await dbDelete(id);
+    allProducts = await dbGetAll();
+    syncToLocalStorage(allProducts);
+    renderAll();
+    showToast('🗑 Produit supprimé.', 'success');
+}
+
+async function clearAll() {
+    if (!confirm('⚠️ Vider TOUS les produits ? Cette action est irréversible.')) return;
+    await dbClear();
+    allProducts = [];
+    syncToLocalStorage([]);
+    renderAll();
+    showToast('🗑 Tous les produits ont été supprimés.', 'success');
+}
+
+// ═══════════════════════════════════════
+// SEARCH / FILTER / PAGINATION
+// ═══════════════════════════════════════
+function searchProducts() {
+    searchQuery = document.getElementById('adminSearch').value.toLowerCase();
+    currentPage = 1;
+    renderProducts();
+}
+
+function setFilter(cat) {
+    currentFilter = cat;
+    currentPage = 1;
+    document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.cat === cat);
+    });
+    renderProducts();
+}
+
+function setView(v) {
+    currentView = v;
+    document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+    document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+    renderProducts();
+}
+
+function changePageSize() {
+    pageSize = parseInt(document.getElementById('pageSizeSel').value);
+    currentPage = 1;
+    renderProducts();
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function renderAll() {
+    updateStats();
+    updateFilterTabs();
+    renderProducts();
+}
+
+function updateStats() {
+    document.getElementById('statTotal').textContent = allProducts.length;
+    document.getElementById('statCats').textContent = new Set(allProducts.map(p => p.category)).size;
+    document.getElementById('statPhotos').textContent = allProducts.filter(p => p.image && p.image.startsWith('data:')).length;
+}
+
+function updateFilterTabs() {
+    const cats = ['all', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = cats.map(cat => {
+        const count = cat === 'all' ? allProducts.length : allProducts.filter(p => p.category === cat).length;
+        return `<button class="filter-tab${currentFilter === cat ? ' active' : ''}" data-cat="${cat}" onclick="setFilter('${cat}')">${cat === 'all' ? 'Tout' : cat} <span style="opacity:0.65;font-size:.75rem;">(${count})</span></button>`;
+    }).join('');
+}
+
+function renderProducts() {
+    // Filter
+    let products = allProducts;
+    if (currentFilter !== 'all') {
+        products = products.filter(p => p.category === currentFilter);
+    }
+    if (searchQuery) {
+        products = products.filter(p =>
+            (p.name || '').toLowerCase().includes(searchQuery) ||
+            (p.category || '').toLowerCase().includes(searchQuery) ||
+            (p.description || '').toLowerCase().includes(searchQuery)
+        );
+    }
+    filteredProducts = products;
+
+    // Pagination
+    const total = filteredProducts.length;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * pageSize;
+    const end = Math.min(start + pageSize, total);
+    const page = filteredProducts.slice(start, end);
+
+    const container = document.getElementById('productsContainer');
+    const pBar = document.getElementById('paginationBar');
+
+    if (allProducts.length === 0) {
+        container.className = '';
+        container.innerHTML = `<div class="empty-list"><div class="icon">📦</div><h3>Aucun produit</h3><p>Utilisez le formulaire pour ajouter votre premier produit.</p></div>`;
+        pBar.style.display = 'none';
+        return;
+    }
+    if (filteredProducts.length === 0) {
+        container.className = '';
+        container.innerHTML = `<div class="empty-list"><div class="icon">🔍</div><h3>Aucun résultat</h3><p>Essayez un autre terme de recherche.</p></div>`;
+        pBar.style.display = 'none';
+        return;
+    }
+
+    // Render view
+    if (currentView === 'grid') {
+        container.className = 'products-grid';
+        container.innerHTML = page.map(p => renderGridCard(p)).join('');
+    } else {
+        container.className = 'products-list-view';
+        container.innerHTML = page.map(p => renderListRow(p)).join('');
+    }
+
+    // Pagination bar
+    pBar.style.display = 'flex';
+    document.getElementById('paginationInfo').textContent = `${start + 1}–${end} sur ${total} produit${total > 1 ? 's' : ''}`;
+    renderPaginationBtns(totalPages);
+}
+
+function isImgUrl(img) {
+    return img && (img.startsWith('data:') || img.startsWith('http') || img.includes('/') || img.includes('.'));
+}
+
+function renderGridCard(p) {
+    const imgHtml = isImgUrl(p.image)
+        ? `<img src="${p.image}" alt="${escHtml(p.name)}" onerror="this.style.display='none'">`
+        : `<span>${p.image || '🛍️'}</span>`;
+    return `
+    <div class="product-card">
+        <div class="product-card-img">
+            ${imgHtml}
+            ${p.badge ? `<div class="product-badge-tag">${escHtml(p.badge)}</div>` : ''}
+        </div>
+        <div class="product-card-body">
+            <div class="product-card-name" title="${escHtml(p.name)}">${escHtml(p.name)}</div>
+            <div class="product-card-meta">
+                <span class="meta-tag">${escHtml(p.category)}</span>
+                ${p.stock > 0 ? `<span style="color:var(--success);font-weight:600;font-size:.73rem;">Stock:${p.stock}</span>` : ''}
+            </div>
+            <div class="product-card-price">${p.price ? p.price.toLocaleString() + ' FCFA' : '—'}</div>
+            <div class="product-card-actions" style="margin-top:.5rem;">
+                <button class="edit-btn" onclick="editProduct(${p.id})" style="flex:1;">✏️</button>
+                <button class="del-btn" onclick="deleteProduct(${p.id})" style="flex:1;">🗑</button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderListRow(p) {
+    const imgHtml = isImgUrl(p.image)
+        ? `<img src="${p.image}" alt="${escHtml(p.name)}" onerror="this.style.display='none'">`
+        : `<span>${p.image || '🛍️'}</span>`;
+    return `
+    <div class="product-row">
+        <div class="product-row-thumb">${imgHtml}</div>
+        <div class="product-row-info">
+            <div class="name">${escHtml(p.name)} ${p.badge ? `<span style="background:var(--gold);color:var(--green-deep);font-size:.7rem;font-weight:800;padding:.1rem .4rem;border-radius:8px;margin-left:.3rem;">${escHtml(p.badge)}</span>` : ''}</div>
+            <div class="meta">
+                <span class="meta-tag">${escHtml(p.category)}</span>
+                <span class="meta-price">${p.price ? p.price.toLocaleString() + ' FCFA' : '—'}</span>
+                ${p.stock > 0 ? `<span style="color:var(--success);font-size:.78rem;font-weight:600;">Stock: ${p.stock}</span>` : ''}
+                ${p.arabic ? `<span style="color:var(--green-mid);">${p.arabic}</span>` : ''}
+            </div>
+            ${p.description ? `<div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;">${escHtml(p.description)}</div>` : ''}
+        </div>
+        <div class="row-actions">
+            <button class="edit-btn" onclick="editProduct(${p.id})">✏️ Modifier</button>
+            <button class="del-btn" onclick="deleteProduct(${p.id})">🗑 Supprimer</button>
+        </div>
+    </div>`;
+}
+
+function renderPaginationBtns(totalPages) {
+    const btns = document.getElementById('paginationBtns');
+    if (totalPages <= 1) { btns.innerHTML = ''; return; }
+
+    let html = `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+
+    const range = [];
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            range.push(i);
+        } else if (range[range.length - 1] !== '...') {
+            range.push('...');
+        }
+    }
+
+    range.forEach(p => {
+        if (p === '...') {
+            html += `<span style="padding:0 0.3rem;color:var(--text-muted);">…</span>`;
+        } else {
+            html += `<button class="page-btn${p === currentPage ? ' active' : ''}" onclick="goPage(${p})">${p}</button>`;
+        }
+    });
+
+    html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
+    btns.innerHTML = html;
+}
+
+function goPage(p) {
+    const totalPages = Math.ceil(filteredProducts.length / pageSize);
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    renderProducts();
+    document.getElementById('productsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════
+async function exportData() {
+    const products = await dbGetAll();
+    const json = JSON.stringify(products, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'maktab_produits_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📤 Export téléchargé (' + products.length + ' produits)', 'success');
+}
+
+async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+        const text = await file.text();
+        const products = JSON.parse(text);
+        if (!Array.isArray(products)) throw new Error('Format invalide');
+        if (!confirm('Importer ' + products.length + ' produit(s) ? Les existants seront gardés.')) return;
+        let count = 0;
+        for (const p of products) {
+            delete p.id; // Let DB assign new ID
+            await dbPut(p);
+            count++;
+        }
+        allProducts = await dbGetAll();
+        syncToLocalStorage(allProducts);
+        renderAll();
+        showToast('📥 ' + count + ' produits importés !', 'success');
+    } catch(e) {
+        showToast('❌ Erreur d\'import: ' + e.message, 'error');
+    }
+    event.target.value = '';
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type}`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3800);
+}
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+initApp();
+</script>
+
+</div>
+</body>
+</html>
