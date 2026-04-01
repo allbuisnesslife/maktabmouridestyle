@@ -432,7 +432,8 @@ footer{background:var(--green-deep);color:var(--cream);padding:4rem 2rem 2rem;}
     <div class="modal-body"><div id="modalBody"></div></div>
   </div>
 </div>
-
+<!-- products  -->
+<div id="products"></div>
 <footer>
   <div class="footer-grid">
     <div class="footer-col">
@@ -650,7 +651,25 @@ function checkout(){ alert('🎉 Commande confirmée !\n\nMerci pour votre achat
 
 /* ── MODAL ── */
 function showDetail(id) {
-  const p = products.find(x=>x.id===id);
+  db.collection("produits").doc(id).get().then((doc) => {
+  if (doc.exists) {
+    const data = doc.data();
+
+    const p = {
+      id: doc.id,
+      name: data.name,
+      price: data.prix,
+      img: data.image,
+      description: data.description
+    };
+
+    console.log(p);
+
+    // ici tu continues ton code (affichage modal etc)
+  } else {
+    console.log("Produit non trouvé");
+  }
+});;
   document.getElementById('modalTitle').textContent = p.name;
   document.getElementById('modalBody').innerHTML=`
     <div class="modal-detail">
@@ -666,29 +685,52 @@ function showDetail(id) {
     </div>`;
   document.getElementById('productModal').style.display='block';
 }
+
 function closeModal(){ document.getElementById('productModal').style.display='none'; }
 
 window.addEventListener('load',()=>{ displayProducts('all'); displayFeatured(); buildCarousel(); });
 </script>
-   // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyB5EzFR2gnXM31cICRwvw5a3bjvBNaR8TI",
-  authDomain: "maktab-ms.firebaseapp.com",
-  projectId: "maktab-ms",
-  storageBucket: "maktab-ms.firebasestorage.app",
-  messagingSenderId: "725580195789",
-  appId: "1:725580195789:web:37b8574f8702ea216b4684",
-  measurementId: "G-41V96FJP07"
-};
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyC5rwARFoReaGyFbDJUEMGYpl3I1Nlp_T4",
+    authDomain: "maktab-mouride-style.firebaseapp.com",
+    projectId: "maktab-mouride-style",
+    storageBucket: "maktab-mouride-style.firebasestorage.app",
+    messagingSenderId: "1064158329495",
+    appId: "1:1064158329495:web:ceecdaf09c350cd869c7d2",
+    measurementId: "G-E61YSNV701"
+  };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-</body></html>
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+<script>
+  const container = document.getElementById("products");
+
+  db. collection("produits").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+
+      container.innerHTML += `
+        <div class="produit">
+          <img src="${data.image}" width="150">
+          <h3>${data.nom}</h3>
+          <p>${data.prix} FCFA</p>
+        </div>
+      `;
+    });
+  }).catch((error) => {
+    console.error("Erreur :", error);
+  });
+</script>
+</body>
+</html>
